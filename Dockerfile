@@ -1,10 +1,19 @@
-FROM n8nio/n8n:1.29.2-debian
+FROM node:20-bookworm-slim
 
-USER root
-
+# تثبيت ffmpeg
 RUN apt-get update && \
-    apt-get install -y ffmpeg && \
+    apt-get install -y ffmpeg ca-certificates curl && \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/*
 
-USER node
+# تثبيت n8n
+RUN npm install -g n8n
+
+# مستخدم n8n
+RUN useradd -m n8n
+USER n8n
+WORKDIR /home/n8n
+
+EXPOSE 5678
+
+CMD ["n8n"]
